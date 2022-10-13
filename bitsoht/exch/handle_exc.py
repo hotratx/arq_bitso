@@ -11,7 +11,7 @@ class Exchanges:
 
     def __init__(self, exch_init: List):
         self.exch_init = exch_init
-        self.sub()
+        self._sub()
 
     def _publish(self, exchange):
         try:
@@ -20,7 +20,7 @@ class Exchanges:
             raise NotImplementedError(f"{e}")
         return retval
 
-    def sub(self):
+    def _sub(self):
         for exch_cls in BaseConnection.__subclasses__():
             if exch_cls.exchange_name in self.exch_init:
                 fn = exch_cls()

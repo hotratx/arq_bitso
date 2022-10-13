@@ -14,24 +14,24 @@ class Bitso(BaseConnection):
 
     def _handle_names_to_external(self):
         for par in self.pairs:
-            name_out = self._original_par(par)
+            name_out = self._par_original(par)
             self._external_names.update({par: name_out})
 
-    def _original_par(self, par: str) -> str:
+    def _par_original(self, par: str) -> str:
         return par.replace('/', '_')
 
     def url_create(self, par: str) -> str:
         """Monta a url para cada par"""
         return f"https://api.bitso.com/v3/ticker/?book={self._external_names.get(par)}"
 
-    def handle_ticker(self, data: dict):
+    def handle_ticker(self, data: dict, par: str):
         """Handle data if OK, the return Ticker instance
         """
         data = data['payload']
         try:
             ticker = Ticker(
                 exchange=self.exchange_name,
-                par=data['book'],
+                par=par,
                 price=data['last'],
                 high=data['high'],
                 low=data['low'],

@@ -19,7 +19,7 @@ class BaseConnection(ABC):
         pass
 
     @abstractmethod
-    def handle_ticker(self, data, cripto: str) -> List[Ticker] | Ticker:
+    def handle_ticker(self, data, par: str) -> List[Ticker] | Ticker:
         pass
 
     async def ticker(self):
@@ -34,8 +34,8 @@ class BaseConnection(ABC):
                         self.url_create(par),
                     )
                 tasks.append(task)
-            responses = asyncio.gather(*tasks, return_exceptions=True)
-            return await responses
+            response = asyncio.gather(*tasks, return_exceptions=True)
+            return await response
 
     async def _fetch(
         self,
@@ -50,7 +50,7 @@ class BaseConnection(ABC):
                 if not response.status == 200:
                     await self._handle_error(response, par)
                 data = await response.json()
-                return handle(data)
+                return handle(data, par)
         except asyncio.TimeoutError as e:
             raise Timeout(f'timeout par: {par} - {e}')
 
