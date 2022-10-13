@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Callable, List, Union
 from aiohttp import ClientSession
 from bitsoht.exceptions import Fetch_Status_Error, Too_Many_Requests, Timeout
-from bitsoht.schemas import Ticker
+from bitsoht.schemas import Ticker, User
 
 
 class BaseConnection(ABC):
@@ -22,10 +22,15 @@ class BaseConnection(ABC):
     def handle_ticker(self, data, par: str) -> List[Ticker] | Ticker:
         pass
 
+    @abstractmethod
+    def get_balance(self, user: User):
+        pass
+
     async def ticker(self):
         tasks = []
         session_timeout = aiohttp.ClientTimeout(total=60, connect=8)
         async with ClientSession(timeout=session_timeout) as session:
+            # tasks = list(map(self._fetch, self.pairs))
             for par in self.pairs:
                 task = self._fetch(
                         session,

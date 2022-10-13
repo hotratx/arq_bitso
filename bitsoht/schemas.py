@@ -14,3 +14,11 @@ class Ticker:
 
     def __repr__(self) -> str:
         return f"{self.exchange}-{self.par}"
+
+
+@dataclass
+class User:
+    id: int
+    name: str
+    bitso_key: str
+    bitso_secret: str

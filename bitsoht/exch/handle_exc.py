@@ -2,7 +2,7 @@ import asyncio
 from typing import List
 from itertools import chain
 from bitsoht.exch.base import BaseConnection
-from bitsoht.schemas import Ticker
+from bitsoht.schemas import Ticker, User
 
 
 class Exchanges:
@@ -26,6 +26,11 @@ class Exchanges:
                 fn = exch_cls()
                 self._handlers[fn.exchange_name] = fn
                 self._tasks_tickers.append(asyncio.ensure_future(fn.ticker()))
+
+    def get_balance(self, user: User, exchange: str):
+        if fn := self._handlers.get(exchange):
+            return fn.get_balance(user)
+        return f'get balance exchange: {exchange} not founded'
 
     def get_tickers(self) -> List[Ticker]:
         """Faz a chamada para execução das corotinas armazenadas em self._tasks_tickers
